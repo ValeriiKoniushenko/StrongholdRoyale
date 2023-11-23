@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0...3.5)
 
-project(Terraria-2.0)
+project(StrongholdRoyale)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED true)
@@ -16,14 +16,5 @@ if (DEFINED CMAKE_BUILD_TYPE)
 	endif ()
 endif ()
 
-add_subdirectory(VaKon2D)
+add_subdirectory(VaKon3D)
 add_subdirectory(game)
-
-add_subdirectory(lib/camera)
-add_subdirectory(lib/entity)
-add_subdirectory(lib/terraria-world)
-add_subdirectory(lib/terraria-game)
-add_subdirectory(lib/map)
-add_subdirectory(lib/texture-manager)
-
-add_subdirectory(dependencies/simplex-noise)
