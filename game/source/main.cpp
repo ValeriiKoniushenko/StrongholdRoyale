@@ -22,10 +22,9 @@
 
 #include "StrongholdRoyale.h"
 
-#include <stdexcept>
-#if WIN32
 #include <Windows.h>
-#endif
+
+#include <stdexcept>
 
 int main()
 {
@@ -47,22 +46,6 @@ int main()
 	{
 		MessageBoxA(nullptr, "Stronghold Royale: unknown FATAL", "Unknown error. For details look into the log.", MB_OK);
 	}
-#elif __linux__
-	catch (const std::runtime_error& error)
-	{
-		MessageBoxA(nullptr, "Stronghold Royale: FATAL", error.what(), MB_OK);
-	}
-	catch (const std::exception& error)
-	{
-		MessageBoxA(nullptr, "Stronghold Royale: std::FATAL", "Unknown std error.", MB_OK);
-	}
-	catch (...)
-	{
-		MessageBoxA(nullptr, "Stronghold Royale: unknown FATAL", "Unknown error. For details look into the log.", MB_OK);
-	}
-#else
-#error "Not defined OS"
-#endif
 
 	return 0;
 }
