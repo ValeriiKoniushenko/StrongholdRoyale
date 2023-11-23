@@ -22,7 +22,12 @@
 
 #include "StrongholdRoyale.h"
 
+#include "Initer.h"
+
 void StrongholdRoyale::start()
 {
+	Initer::init({.glfwVersion = glm::ivec2(3, 3), .windowSize = {2000, 1000}, .title = "Stronghold Royale"});
 
+	while(true)
+	{}
 }

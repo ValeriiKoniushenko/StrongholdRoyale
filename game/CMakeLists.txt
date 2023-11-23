@@ -6,4 +6,5 @@ target_include_directories(StrongholdRoyale
 
 target_link_libraries(StrongholdRoyale PUBLIC
 	Utils
+	Core-Wrappers
 	)
