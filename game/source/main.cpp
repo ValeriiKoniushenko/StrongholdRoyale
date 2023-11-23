@@ -33,7 +33,6 @@ int main()
 		StrongholdRoyale game;
 		game.start();
 	}
-#if WIN32
 	catch (const std::runtime_error& error)
 	{
 		MessageBoxA(nullptr, "Stronghold Royale: FATAL", error.what(), MB_OK);
