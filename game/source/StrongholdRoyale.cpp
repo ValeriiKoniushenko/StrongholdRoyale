@@ -26,9 +26,7 @@
 #include "Initer.h"
 #include "ShaderPack.h"
 #include "Texture.h"
-#include "Vao.h"
-#include "WidgetVbo.h"
-#include "glm/ext/matrix_clip_space.hpp"
+#include "Widget.h"
 
 void StrongholdRoyale::start()
 {
@@ -39,43 +37,20 @@ void StrongholdRoyale::start()
 	ShaderPack shaderPack;
 	shaderPack.loadShaders("widget", "assets/shaders/widget.vert", "assets/shaders/widget.frag");
 
-	shaderPack["widget"].use();
-
-	Vao vao(true, true);
-	WidgetVbo vbo(true, true);
 	Texture texture(Gl::Texture::Target::Texture2D, true, true);
 	Image image("assets/textures/box.jpg");
 	texture.setImage(image);
 	texture.loadToGpu();
 
-	vbo.data({
-		{{0.f, 0.f}, {0.f, 0.f}},
-		{{111.f, 0.f}, {1.f, 0.f}},
-		{{111.f, 111.f}, {1.f, 1.f}},
-		{{0.f, 0.f}, {0.f, 0.f}},
-		{{111.f, 111.f}, {1.f, 1.f}},
-		{{0.f, 111.f}, {0.f, 1.f}},
-	});
-
-	Gl::Vao::vertexAttribPointer(1, 2, Gl::Type::Float, false, 4 * sizeof(float), nullptr);
-	Gl::Vao::vertexAttribPointer(2, 2, Gl::Type::Float, false, 4 * sizeof(float), reinterpret_cast<void*>(2 * sizeof(float)));
-
-	glm::mat4 proj = glm::ortho(0.0f, static_cast<float>(GetWindow().getSize().width), 0.0f,
-		static_cast<float>(GetWindow().getSize().height), 0.1f, 1000.0f);
+	Widget widget;
+	widget.setTexture(texture);
 
 	while (!GetWindow().shouldClose())
 	{
 		GetWindow().clearColor({0.2f, 0.3f, 0.3f});
 		GetWindow().clear(GL_COLOR_BUFFER_BIT);
 
-		auto& shader = shaderPack["widget"];
-		shader.use();
-		shader.uniform("uProjection", false, proj);
-
-		vao.bind();
-		vbo.bind();
-		texture.bind();
-		Gl::drawArrays(GL_TRIANGLES, 0, 6);
+		widget.draw(shaderPack);
 
 		GetWorld().update();
 		GetWindow().pollEvent();
