@@ -46,6 +46,7 @@ void StrongholdRoyale::start()
 	Texture texture(Gl::Texture::Target::Texture2D, true, true);
 
 	Image image;
+	image.setInternalChannel(Gl::Texture::Channel::SRGB);
 	image.loadImage("assets/textures/box.jpg");
 
 	texture.setImage(image);
@@ -55,6 +56,9 @@ void StrongholdRoyale::start()
 		{{0.f, 0.f}, {0.f, 0.f}},
 		{{111.f, 0.f}, {1.f, 0.f}},
 		{{111.f, 111.f}, {1.f, 1.f}},
+		{{0.f, 0.f}, {0.f, 0.f}},
+		{{111.f, 111.f}, {1.f, 1.f}},
+		{{0.f, 111.f}, {0.f, 1.f}},
 	});
 
 	Gl::Vao::vertexAttribPointer(1, 2, Gl::Type::Float, false, 4 * sizeof(float), nullptr);
@@ -74,7 +78,7 @@ void StrongholdRoyale::start()
 		vao.bind();
 		vbo.bind();
 		texture.bind();
-		Gl::drawArrays(GL_TRIANGLES, 0, 3);
+		Gl::drawArrays(GL_TRIANGLES, 0, 6);
 
 		GetWorld().update();
 		GetWindow().pollEvent();
