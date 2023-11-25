@@ -27,10 +27,13 @@
 #include "Texture.h"
 #include "Vao.h"
 #include "WidgetVbo.h"
+#include "glm/ext/matrix_clip_space.hpp"
 
 void StrongholdRoyale::start()
 {
 	Initer::init({.glfwVersion = glm::ivec2(3, 3), .windowSize = {2000, 1000}, .title = "Stronghold Royale"});
+
+	GetWindow().viewport(0, 0, 2000, 1000);
 
 	ShaderPack shaderPack;
 	shaderPack.loadShaders("widget", "assets/shaders/widget.vert", "assets/shaders/widget.frag");
@@ -41,21 +44,24 @@ void StrongholdRoyale::start()
 
 	vbo.data({
 		{{0.f, 0.f}, {0.f, 0.f}},
-		{{1.f, 0.f}, {0.f, 0.f}},
-		{{1.f, 1.f}, {0.f, 0.f}},
+		{{111.f, 0.f}, {0.f, 0.f}},
+		{{111.f, 111.f}, {0.f, 0.f}},
 	});
 
 	Gl::Vao::vertexAttribPointer(1, 2, Gl::Type::Float, false, 4 * sizeof(float), nullptr);
 	Gl::Vao::vertexAttribPointer(2, 2, Gl::Type::Float, false, 4 * sizeof(float), reinterpret_cast<void*>(2 * sizeof(float)));
 
-	GetWindow().viewport(0, 0, 2000, 1000);
+	glm::mat4 proj = glm::ortho(0.0f, 2000.0f, 0.0f, 1000.0f, 0.1f, 1000.0f);
 
 	while (!GetWindow().shouldClose())
 	{
 		GetWindow().clearColor({0.2f, 0.3f, 0.3f});
 		GetWindow().clear(GL_COLOR_BUFFER_BIT);
 
-		shaderPack["widget"].use();
+		auto& shader = shaderPack["widget"];
+		shader.use();
+		shader.uniform("uProjection", false, proj);
+
 		vao.bind();
 		vbo.bind();
 		Gl::drawArrays(GL_TRIANGLES, 0, 3);
