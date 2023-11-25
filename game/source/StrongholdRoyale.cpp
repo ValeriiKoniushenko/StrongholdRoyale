@@ -22,6 +22,7 @@
 
 #include "StrongholdRoyale.h"
 
+#include "Image.h"
 #include "Initer.h"
 #include "ShaderPack.h"
 #include "Texture.h"
@@ -39,13 +40,21 @@ void StrongholdRoyale::start()
 	shaderPack.loadShaders("widget", "assets/shaders/widget.vert", "assets/shaders/widget.frag");
 
 	shaderPack["widget"].use();
+
 	Vao vao(true, true);
 	WidgetVbo vbo(true, true);
+	Texture texture(Gl::Texture::Target::Texture2D, true, true);
+
+	Image image;
+	image.loadImage("assets/textures/box.jpg");
+
+	texture.setImage(image);
+	texture.loadToGpu();
 
 	vbo.data({
 		{{0.f, 0.f}, {0.f, 0.f}},
-		{{111.f, 0.f}, {0.f, 0.f}},
-		{{111.f, 111.f}, {0.f, 0.f}},
+		{{111.f, 0.f}, {1.f, 0.f}},
+		{{111.f, 111.f}, {1.f, 1.f}},
 	});
 
 	Gl::Vao::vertexAttribPointer(1, 2, Gl::Type::Float, false, 4 * sizeof(float), nullptr);
@@ -64,6 +73,7 @@ void StrongholdRoyale::start()
 
 		vao.bind();
 		vbo.bind();
+		texture.bind();
 		Gl::drawArrays(GL_TRIANGLES, 0, 3);
 
 		GetWorld().update();

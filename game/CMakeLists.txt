@@ -15,7 +15,11 @@ add_custom_command(TARGET StrongholdRoyale PRE_BUILD
 	COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/assets
 	COMMAND ${CMAKE_COMMAND} -E copy_directory
 	${CMAKE_SOURCE_DIR}/VaKon3D/assets
-	${CMAKE_CURRENT_BINARY_DIR}/assets)
+	${CMAKE_CURRENT_BINARY_DIR}/assets
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+	${CMAKE_SOURCE_DIR}/assets
+	${CMAKE_CURRENT_BINARY_DIR}/assets
+	)
 
 add_custom_target(
 	Copy-Assets
@@ -23,5 +27,8 @@ add_custom_target(
 	COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/assets
 	COMMAND ${CMAKE_COMMAND} -E copy_directory
 	${CMAKE_SOURCE_DIR}/VaKon3D/assets
+	${CMAKE_CURRENT_BINARY_DIR}/assets
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+	${CMAKE_SOURCE_DIR}/assets
 	${CMAKE_CURRENT_BINARY_DIR}/assets
 )
