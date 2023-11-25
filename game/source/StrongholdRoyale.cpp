@@ -42,6 +42,8 @@ void StrongholdRoyale::start()
 	texture.setImage(image);
 
 	Widget widget(texture);
+	widget.move({100.f, 100.f});
+	widget.setOrigin({-50.f, -50.f});
 
 	while (!GetWindow().shouldClose())
 	{
@@ -49,6 +51,7 @@ void StrongholdRoyale::start()
 		GetWindow().clear(GL_COLOR_BUFFER_BIT);
 
 		widget.draw(shaderPack);
+		widget.rotate(0.01f);
 
 		GetWorld().update();
 		GetWindow().pollEvent();
