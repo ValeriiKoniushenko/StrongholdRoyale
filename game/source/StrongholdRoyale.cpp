@@ -40,10 +40,8 @@ void StrongholdRoyale::start()
 	Texture texture(Gl::Texture::Target::Texture2D, true, true);
 	Image image("assets/textures/box.jpg");
 	texture.setImage(image);
-	texture.loadToGpu();
 
-	Widget widget;
-	widget.setTexture(texture);
+	Widget widget(texture);
 
 	while (!GetWindow().shouldClose())
 	{
