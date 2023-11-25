@@ -35,15 +35,15 @@ int main()
 	}
 	catch (const std::runtime_error& error)
 	{
-		MessageBoxA(nullptr, "Stronghold Royale: FATAL", error.what(), MB_OK);
+		MessageBoxA(nullptr, error.what(), "Stronghold Royale: FATAL", MB_OK);
 	}
 	catch (const std::exception& error)
 	{
-		MessageBoxA(nullptr, "Stronghold Royale: std::FATAL", "Unknown std error.", MB_OK);
+		MessageBoxA(nullptr, "Unknown std error.", "Stronghold Royale: std::FATAL", MB_OK);
 	}
 	catch (...)
 	{
-		MessageBoxA(nullptr, "Stronghold Royale: unknown FATAL", "Unknown error. For details look into the log.", MB_OK);
+		MessageBoxA(nullptr, "Unknown error. For details look into the log.", "Stronghold Royale: unknown FATAL", MB_OK);
 	}
 
 	return 0;

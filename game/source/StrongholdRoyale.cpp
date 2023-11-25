@@ -23,11 +23,45 @@
 #include "StrongholdRoyale.h"
 
 #include "Initer.h"
+#include "ShaderPack.h"
+#include "Texture.h"
+#include "Vao.h"
+#include "WidgetVbo.h"
 
 void StrongholdRoyale::start()
 {
 	Initer::init({.glfwVersion = glm::ivec2(3, 3), .windowSize = {2000, 1000}, .title = "Stronghold Royale"});
 
-	while(true)
-	{}
+	ShaderPack shaderPack;
+	shaderPack.loadShaders("widget", "assets/shaders/widget.vert", "assets/shaders/widget.frag");
+
+	shaderPack["widget"].use();
+	Vao vao(true, true);
+	WidgetVbo vbo(true, true);
+
+	vbo.data({
+		{{0.f, 0.f}, {0.f, 0.f}},
+		{{1.f, 0.f}, {0.f, 0.f}},
+		{{1.f, 1.f}, {0.f, 0.f}},
+	});
+
+	Gl::Vao::vertexAttribPointer(1, 2, Gl::Type::Float, false, 4 * sizeof(float), nullptr);
+	Gl::Vao::vertexAttribPointer(2, 2, Gl::Type::Float, false, 4 * sizeof(float), reinterpret_cast<void*>(2 * sizeof(float)));
+
+	GetWindow().viewport(0, 0, 2000, 1000);
+
+	while (!GetWindow().shouldClose())
+	{
+		GetWindow().clearColor({0.2f, 0.3f, 0.3f});
+		GetWindow().clear(GL_COLOR_BUFFER_BIT);
+
+		shaderPack["widget"].use();
+		vao.bind();
+		vbo.bind();
+		Gl::drawArrays(GL_TRIANGLES, 0, 3);
+
+		GetWorld().update();
+		GetWindow().pollEvent();
+		GetWindow().swapBuffers();
+	}
 }
