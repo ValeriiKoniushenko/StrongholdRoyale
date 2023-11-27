@@ -8,7 +8,8 @@ target_link_libraries(StrongholdRoyale PUBLIC
 	Utils
 	Core-Wrappers
 	Graphics
-	)
+	Input-Devices
+)
 
 add_custom_command(TARGET StrongholdRoyale PRE_BUILD
 	COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/assets
@@ -19,7 +20,7 @@ add_custom_command(TARGET StrongholdRoyale PRE_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy_directory
 	${CMAKE_SOURCE_DIR}/assets
 	${CMAKE_CURRENT_BINARY_DIR}/assets
-	)
+)
 
 add_custom_target(
 	Copy-Assets

@@ -24,9 +24,14 @@
 
 #include "Image.h"
 #include "Initer.h"
+#include "InputAction.h"
 #include "ShaderPack.h"
 #include "Texture.h"
+#include "Triangle.h"
+#include "UpdateableCollector.h"
 #include "Widget.h"
+
+#include <iostream>
 
 void StrongholdRoyale::start()
 {
@@ -36,25 +41,60 @@ void StrongholdRoyale::start()
 
 	ShaderPack shaderPack;
 	shaderPack.loadShaders("widget", "assets/shaders/widget.vert", "assets/shaders/widget.frag");
+	shaderPack.loadShaders("triangle", "assets/shaders/triangle.vert", "assets/shaders/triangle.frag");
 
-	Texture texture(Gl::Texture::Target::Texture2D, true, true);
-	Image image("assets/textures/box.jpg");
-	texture.setImage(image);
+	Texture textureLoading(Gl::Texture::Target::Texture2D, true, true);
+	Image imageLoading("assets/textures/loading.png", Gl::Texture::Channel::SRGBA);
+	textureLoading.setImage(imageLoading);
 
-	Widget widget(texture);
+	Widget widget(textureLoading);
 	widget.move({100.f, 100.f});
 	widget.setOrigin({-50.f, -50.f});
+
+	Triangle triangle(textureLoading);
+	triangle.move({0.f, 0.f, -100.f});
+
+	glEnable(GL_DEPTH_TEST);
+
+	float speed = 10.f;
+	KeyboardInputAction moveRight("moveRight", Keyboard::Key::D);
+	moveRight.setIsRepeatable(true);
+	moveRight.onAction.subscribe([&]() { triangle.move(glm::vec3(speed, 0, 0)); });
+
+	KeyboardInputAction moveLeft("moveLeft", Keyboard::Key::A);
+	moveLeft.setIsRepeatable(true);
+	moveLeft.onAction.subscribe([&]() { triangle.move(glm::vec3(-speed, 0, 0)); });
+
+	KeyboardInputAction moveTop("moveTop", Keyboard::Key::W);
+	moveTop.setIsRepeatable(true);
+	moveTop.onAction.subscribe([&]() { triangle.move(glm::vec3(0, speed, 0)); });
+
+	KeyboardInputAction moveBottom("moveBottom", Keyboard::Key::S);
+	moveBottom.setIsRepeatable(true);
+	moveBottom.onAction.subscribe([&]() { triangle.move(glm::vec3(0, -speed, 0)); });
+
+	KeyboardInputAction moveFar("moveFar", Keyboard::Key::Q);
+	moveFar.setIsRepeatable(true);
+	moveFar.onAction.subscribe([&]() { triangle.move(glm::vec3(0, 0, speed)); });
+
+	KeyboardInputAction moveNear("moveNear", Keyboard::Key::E);
+	moveNear.setIsRepeatable(true);
+	moveNear.onAction.subscribe([&]() { triangle.move(glm::vec3(0, 0, -speed)); });
 
 	while (!GetWindow().shouldClose())
 	{
 		GetWindow().clearColor({0.2f, 0.3f, 0.3f});
-		GetWindow().clear(GL_COLOR_BUFFER_BIT);
+		GetWindow().clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		widget.draw(shaderPack);
-		widget.rotate(0.01f);
+		widget.rotate(-0.05f);
+
+		triangle.draw(shaderPack);
+		std::cout << triangle.getPosition().x << " " << triangle.getPosition().y << " " << triangle.getPosition().z << std::endl;
 
 		GetWorld().update();
 		GetWindow().pollEvent();
 		GetWindow().swapBuffers();
+		GetUpdateableCollector().updateAll();
 	}
 }
