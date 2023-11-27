@@ -30,6 +30,9 @@
 #include "Triangle.h"
 #include "UpdateableCollector.h"
 #include "Widget.h"
+#include "glm/ext/matrix_clip_space.hpp"
+#include "glm/ext/matrix_transform.hpp"
+#include "glm/gtx/transform.hpp"
 
 #include <iostream>
 
@@ -81,6 +84,19 @@ void StrongholdRoyale::start()
 	moveNear.setIsRepeatable(true);
 	moveNear.onAction.subscribe([&]() { triangle.move(glm::vec3(0, 0, -speed)); });
 
+	triangle.setVertices({
+		{{0.f, 0.f, 0.f}, {0.f, 0.f}, {0.f, 0.f, 1.f}},
+		{{100.f, 0.f, 0.f}, {1.f, 0.f}, {0.f, 0.f, 1.f}},
+		{{100.f, 100.f, 0.f}, {1.f, 1.f}, {0.f, 0.f, 1.f}},
+	});
+
+	const glm::mat4 proj = glm::perspective(glm::radians(190.0f),
+		static_cast<float>(GetWindow().getSize().width) / static_cast<float>(GetWindow().getSize().height), 0.1f, 10000.0f);
+
+	glm::mat4 model = glm::mat4(1.f);
+	glm::mat4 view = glm::mat4(1.f);
+	view = glm::translate(view, glm::vec3(0, 0, -100.f));
+
 	while (!GetWindow().shouldClose())
 	{
 		GetWindow().clearColor({0.2f, 0.3f, 0.3f});
@@ -89,8 +105,7 @@ void StrongholdRoyale::start()
 		widget.draw(shaderPack);
 		widget.rotate(-0.05f);
 
-		triangle.draw(shaderPack);
-		std::cout << triangle.getPosition().x << " " << triangle.getPosition().y << " " << triangle.getPosition().z << std::endl;
+		triangle.draw(shaderPack, proj, view, model);
 
 		GetWorld().update();
 		GetWindow().pollEvent();
