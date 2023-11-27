@@ -44,6 +44,8 @@ void StrongholdRoyale::start()
 	GetWindow().viewport(0, 0, GetWindow().getSize().width, GetWindow().getSize().height);
 
 	Camera camera;
+	camera.setSensitive({3.f, 3.f});
+	camera.setFov(110.f);
 
 	ShaderPack shaderPack;
 	shaderPack.loadShaders("widget", "assets/shaders/widget.vert", "assets/shaders/widget.frag");
@@ -65,23 +67,22 @@ void StrongholdRoyale::start()
 
 	KeyboardInputAction iaCameraRight("Move camera to right", Keyboard::Key::D);
 	iaCameraRight.setIsRepeatable(true);
-	iaCameraRight.setFrequency(KeyboardInputAction::TimeT(1));
-	iaCameraRight.onAction.subscribe([&]() { camera.move({cameraSpeed, 0.f, 0.f}); });
+	iaCameraRight.onAction.subscribe([&]() { camera.moveRight(cameraSpeed); });
 
 	KeyboardInputAction iaCameraLeft("Move camera to left", Keyboard::Key::A);
 	iaCameraLeft.setIsRepeatable(true);
-	iaCameraLeft.setFrequency(KeyboardInputAction::TimeT(1));
-	iaCameraLeft.onAction.subscribe([&]() { camera.move({-cameraSpeed, 0.f, 0.f}); });
+	iaCameraLeft.onAction.subscribe([&]() { camera.moveRight(-cameraSpeed); });
 
 	KeyboardInputAction iaCameraForward("Move camera forward", Keyboard::Key::W);
 	iaCameraForward.setIsRepeatable(true);
-	iaCameraForward.setFrequency(KeyboardInputAction::TimeT(1));
-	iaCameraForward.onAction.subscribe([&]() { camera.move({0.f, 0.f, cameraSpeed}); });
+	iaCameraForward.onAction.subscribe([&]() { camera.moveForward(cameraSpeed); });
 
 	KeyboardInputAction iaCameraBackward("Move camera to backward", Keyboard::Key::S);
 	iaCameraBackward.setIsRepeatable(true);
-	iaCameraBackward.setFrequency(KeyboardInputAction::TimeT(1));
-	iaCameraBackward.onAction.subscribe([&]() { camera.move({0.f, 0.f, -cameraSpeed}); });
+	iaCameraBackward.onAction.subscribe([&]() { camera.moveForward(-cameraSpeed); });
+
+	MouseInputAction iaCameraRotate("Camera rotate");
+	iaCameraRotate.onMove.subscribe([&](glm::ivec2 direction) { camera.rotate(static_cast<glm::vec2>(direction)); });
 
 	Triangle triangle(textureBox);
 	triangle.setVertices({
@@ -102,6 +103,7 @@ void StrongholdRoyale::start()
 		widget.draw(shaderPack);
 		widget.rotate(-0.05f);
 
+		std::cout << camera.getRotation().x << " " << camera.getRotation().y << std::endl;
 		triangle.draw(shaderPack, camera, glm::mat4(1.f));
 
 		GetWorld().update();
