@@ -61,6 +61,28 @@ void StrongholdRoyale::start()
 	widget.move({100.f, 100.f});
 	widget.setOrigin({-50.f, -50.f});
 
+	float cameraSpeed = 1.f;
+
+	KeyboardInputAction iaCameraRight("Move camera to right", Keyboard::Key::D);
+	iaCameraRight.setIsRepeatable(true);
+	iaCameraRight.setFrequency(KeyboardInputAction::TimeT(1));
+	iaCameraRight.onAction.subscribe([&]() { camera.move({cameraSpeed, 0.f, 0.f}); });
+
+	KeyboardInputAction iaCameraLeft("Move camera to left", Keyboard::Key::A);
+	iaCameraLeft.setIsRepeatable(true);
+	iaCameraLeft.setFrequency(KeyboardInputAction::TimeT(1));
+	iaCameraLeft.onAction.subscribe([&]() { camera.move({-cameraSpeed, 0.f, 0.f}); });
+
+	KeyboardInputAction iaCameraForward("Move camera forward", Keyboard::Key::W);
+	iaCameraForward.setIsRepeatable(true);
+	iaCameraForward.setFrequency(KeyboardInputAction::TimeT(1));
+	iaCameraForward.onAction.subscribe([&]() { camera.move({0.f, 0.f, cameraSpeed}); });
+
+	KeyboardInputAction iaCameraBackward("Move camera to backward", Keyboard::Key::S);
+	iaCameraBackward.setIsRepeatable(true);
+	iaCameraBackward.setFrequency(KeyboardInputAction::TimeT(1));
+	iaCameraBackward.onAction.subscribe([&]() { camera.move({0.f, 0.f, -cameraSpeed}); });
+
 	Triangle triangle(textureBox);
 	triangle.setVertices({
 		{{0.f, 0.f, 0.f}, {0.f, 0.f}, {0.f, 0.f, 1.f}},
