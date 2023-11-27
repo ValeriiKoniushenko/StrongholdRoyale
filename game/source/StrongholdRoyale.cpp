@@ -22,6 +22,7 @@
 
 #include "StrongholdRoyale.h"
 
+#include "Camera.h"
 #include "Image.h"
 #include "Initer.h"
 #include "InputAction.h"
@@ -42,6 +43,8 @@ void StrongholdRoyale::start()
 
 	GetWindow().viewport(0, 0, GetWindow().getSize().width, GetWindow().getSize().height);
 
+	Camera camera;
+
 	ShaderPack shaderPack;
 	shaderPack.loadShaders("widget", "assets/shaders/widget.vert", "assets/shaders/widget.frag");
 	shaderPack.loadShaders("triangle", "assets/shaders/triangle.vert", "assets/shaders/triangle.frag");
@@ -50,52 +53,24 @@ void StrongholdRoyale::start()
 	Image imageLoading("assets/textures/loading.png", Gl::Texture::Channel::SRGBA);
 	textureLoading.setImage(imageLoading);
 
+	Texture textureBox(Gl::Texture::Target::Texture2D, true, true);
+	Image imageBox("assets/textures/box.jpg", Gl::Texture::Channel::SRGB);
+	textureBox.setImage(imageBox);
+
 	Widget widget(textureLoading);
 	widget.move({100.f, 100.f});
 	widget.setOrigin({-50.f, -50.f});
 
-	Triangle triangle(textureLoading);
-	triangle.move({0.f, 0.f, -100.f});
-
-	glEnable(GL_DEPTH_TEST);
-
-	float speed = 10.f;
-	KeyboardInputAction moveRight("moveRight", Keyboard::Key::D);
-	moveRight.setIsRepeatable(true);
-	moveRight.onAction.subscribe([&]() { triangle.move(glm::vec3(speed, 0, 0)); });
-
-	KeyboardInputAction moveLeft("moveLeft", Keyboard::Key::A);
-	moveLeft.setIsRepeatable(true);
-	moveLeft.onAction.subscribe([&]() { triangle.move(glm::vec3(-speed, 0, 0)); });
-
-	KeyboardInputAction moveTop("moveTop", Keyboard::Key::W);
-	moveTop.setIsRepeatable(true);
-	moveTop.onAction.subscribe([&]() { triangle.move(glm::vec3(0, speed, 0)); });
-
-	KeyboardInputAction moveBottom("moveBottom", Keyboard::Key::S);
-	moveBottom.setIsRepeatable(true);
-	moveBottom.onAction.subscribe([&]() { triangle.move(glm::vec3(0, -speed, 0)); });
-
-	KeyboardInputAction moveFar("moveFar", Keyboard::Key::Q);
-	moveFar.setIsRepeatable(true);
-	moveFar.onAction.subscribe([&]() { triangle.move(glm::vec3(0, 0, speed)); });
-
-	KeyboardInputAction moveNear("moveNear", Keyboard::Key::E);
-	moveNear.setIsRepeatable(true);
-	moveNear.onAction.subscribe([&]() { triangle.move(glm::vec3(0, 0, -speed)); });
-
+	Triangle triangle(textureBox);
 	triangle.setVertices({
 		{{0.f, 0.f, 0.f}, {0.f, 0.f}, {0.f, 0.f, 1.f}},
 		{{100.f, 0.f, 0.f}, {1.f, 0.f}, {0.f, 0.f, 1.f}},
 		{{100.f, 100.f, 0.f}, {1.f, 1.f}, {0.f, 0.f, 1.f}},
 	});
 
-	const glm::mat4 proj = glm::perspective(glm::radians(190.0f),
-		static_cast<float>(GetWindow().getSize().width) / static_cast<float>(GetWindow().getSize().height), 0.1f, 10000.0f);
-
-	glm::mat4 model = glm::mat4(1.f);
-	glm::mat4 view = glm::mat4(1.f);
-	view = glm::translate(view, glm::vec3(0, 0, -100.f));
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glEnable(GL_CULL_FACE);
 
 	while (!GetWindow().shouldClose())
 	{
@@ -105,7 +80,7 @@ void StrongholdRoyale::start()
 		widget.draw(shaderPack);
 		widget.rotate(-0.05f);
 
-		triangle.draw(shaderPack, proj, view, model);
+		triangle.draw(shaderPack, camera, glm::mat4(1.f));
 
 		GetWorld().update();
 		GetWindow().pollEvent();

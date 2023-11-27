@@ -9,6 +9,7 @@ target_link_libraries(StrongholdRoyale PUBLIC
 	Core-Wrappers
 	Graphics
 	Input-Devices
+	Camera
 )
 
 add_custom_command(TARGET StrongholdRoyale PRE_BUILD
