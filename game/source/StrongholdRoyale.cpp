@@ -23,6 +23,7 @@
 #include "StrongholdRoyale.h"
 
 #include "Camera.h"
+#include "Clock.h"
 #include "Image.h"
 #include "Initer.h"
 #include "InputAction.h"
@@ -31,6 +32,7 @@
 #include "Triangle.h"
 #include "UpdateableCollector.h"
 #include "Widget.h"
+#include "WorldVariables.h"
 #include "glm/ext/matrix_clip_space.hpp"
 
 #include <iostream>
@@ -61,7 +63,7 @@ void StrongholdRoyale::start()
 	widget.move({100.f, 100.f});
 	widget.setOrigin({-50.f, -50.f});
 
-	float cameraSpeed = 0.005f;
+	float cameraSpeed = 100.0f;
 
 	KeyboardInputAction iaCameraRight("Move camera to right", Keyboard::Key::D);
 	iaCameraRight.setIsRepeatable(true);
@@ -187,10 +189,14 @@ void StrongholdRoyale::start()
 	glEnable(GL_BLEND);
 	glEnable(GL_CULL_FACE);
 
+	Clock clock;
 	while (!GetWindow().shouldClose())
 	{
+		clock.start();
 		GetWindow().clearColor({0.2f, 0.3f, 0.3f});
 		GetWindow().clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		GetWorldVariables()["tick"] = clock.getGap();
 
 		widget.draw(shaderPack);
 		widget.rotate(-0.05f);
@@ -212,5 +218,6 @@ void StrongholdRoyale::start()
 		GetWindow().pollEvent();
 		GetWindow().swapBuffers();
 		GetUpdateableCollector().updateAll();
+		clock.stop();
 	}
 }
