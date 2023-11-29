@@ -106,9 +106,6 @@ void StrongholdRoyale::start()
 	glEnable(GL_BLEND);
 	glEnable(GL_CULL_FACE);
 
-	Lightning lightning;
-	lightning.ambient.lightColor = toGlColor3({255, 255, 255});
-
 	Cube cube;
 	cube.setTexture(textureBox);
 	cube.setOrigin({-50.f, -50.f, -50.f});
@@ -117,6 +114,19 @@ void StrongholdRoyale::start()
 	sun.setTexture(textureLoading);
 	sun.setPosition({1000.f, 0, 0});
 	sun.setOrigin({-50.f, -50.f, -50.f});
+
+	Lightning lightning;
+	lightning.ambient.lightColor = toGlColor3({255, 255, 255});
+	lightning.specular.position = sun.getPosition();
+
+	glm::vec2 textureSize = textureBox.getImage()->getSize();
+	float size = 50.f;
+	Triangle triangle;
+	triangle.setVertices({TriangleVbo::Unit{{0.f, 0.f, 0.f}, {0.f, 0.f}, {0.f, 0.f, 1.f}, {textureSize.x, textureSize.y}},
+		TriangleVbo::Unit{{size, 0.f, 0.f}, {1.f, 0.f}, {0.f, 0.f, 1.f}, {textureSize.x, textureSize.y}},
+		TriangleVbo::Unit{{size, size, 0.f}, {1.f, 1.f}, {0.f, 0.f, 1.f}, {textureSize.x, textureSize.y}}});
+	triangle.setPosition({500.f, 0.f, 0.f});
+	triangle.setTexture(textureBox);
 
 	Clock clock;
 	while (!GetWindow().shouldClose())
@@ -129,11 +139,11 @@ void StrongholdRoyale::start()
 
 		cube.draw(shaderPack, lightning, camera);
 		sun.draw(shaderPack, lightning, camera);
+		triangle.draw(shaderPack, lightning, camera);
+		triangle.rotateY(-0.005f);
 
 		widget.draw(shaderPack);
 		widget.rotate(-0.05f);
-
-		std::cout << camera.getPosition().x << " " << camera.getPosition().y << " " << camera.getPosition().z << std::endl;
 
 		GetWorld().update();
 		GetWindow().pollEvent();
