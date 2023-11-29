@@ -60,35 +60,39 @@ void StrongholdRoyale::start()
 	Image imageBox("assets/textures/box.jpg", Gl::Texture::Channel::SRGB);
 	textureBox.setImage(imageBox);
 
+	Texture textureSun(Gl::Texture::Target::Texture2D, true, true);
+	Image imageSun("assets/textures/sun.jpg", Gl::Texture::Channel::SRGB);
+	textureSun.setImage(imageSun);
+
 	Widget widget(textureLoading);
 	widget.move({100.f, 100.f});
 	widget.setOrigin({-50.f, -50.f});
 
-	float cameraSpeed = 5.0f;
+	float cameraImpulse = 5.0f;
 
 	KeyboardInputAction iaCameraRight("Move camera to right", Keyboard::Key::D);
 	iaCameraRight.setIsRepeatable(true);
-	iaCameraRight.onAction.subscribe([&]() { camera.addImpulseRight(cameraSpeed); });
+	iaCameraRight.onAction.subscribe([&]() { camera.addImpulseRight(cameraImpulse); });
 
 	KeyboardInputAction iaCameraLeft("Move camera to left", Keyboard::Key::A);
 	iaCameraLeft.setIsRepeatable(true);
-	iaCameraLeft.onAction.subscribe([&]() { camera.addImpulseRight(-cameraSpeed); });
+	iaCameraLeft.onAction.subscribe([&]() { camera.addImpulseRight(-cameraImpulse); });
 
 	KeyboardInputAction iaCameraForward("Move camera forward", Keyboard::Key::W);
 	iaCameraForward.setIsRepeatable(true);
-	iaCameraForward.onAction.subscribe([&]() { camera.addImpulseForward(cameraSpeed); });
+	iaCameraForward.onAction.subscribe([&]() { camera.addImpulseForward(cameraImpulse); });
 
 	KeyboardInputAction iaCameraBackward("Move camera backward", Keyboard::Key::S);
 	iaCameraBackward.setIsRepeatable(true);
-	iaCameraBackward.onAction.subscribe([&]() { camera.addImpulseForward(-cameraSpeed); });
+	iaCameraBackward.onAction.subscribe([&]() { camera.addImpulseForward(-cameraImpulse); });
 
 	KeyboardInputAction iaCameraUp("Move camera to up", Keyboard::Key::Space);
 	iaCameraUp.setIsRepeatable(true);
-	iaCameraUp.onAction.subscribe([&]() { camera.addImpulseUp(cameraSpeed); });
+	iaCameraUp.onAction.subscribe([&]() { camera.addImpulseUp(cameraImpulse); });
 
 	KeyboardInputAction iaCameraDown("Move camera to down", Keyboard::Key::C);
 	iaCameraDown.setIsRepeatable(true);
-	iaCameraDown.onAction.subscribe([&]() { camera.addImpulseUp(-cameraSpeed); });
+	iaCameraDown.onAction.subscribe([&]() { camera.addImpulseUp(-cameraImpulse); });
 
 	KeyboardInputAction iaExit("Exit", Keyboard::Key::Esc);
 	iaExit.setIsRepeatable(false);
@@ -108,12 +112,12 @@ void StrongholdRoyale::start()
 
 	Cube cube;
 	cube.setTexture(textureBox);
-	cube.setOrigin({-50.f, -50.f, -50.f});
+	cube.setOrigin({50.f, 50.f, -50.f});
 
 	Cube sun;
-	sun.setTexture(textureLoading);
+	sun.setTexture(textureSun);
 	sun.setPosition({1000.f, 0, 0});
-	sun.setOrigin({-50.f, -50.f, -50.f});
+	sun.setOrigin({50.f, 50.f, -50.f});
 
 	Lightning lightning;
 	lightning.ambient.lightColor = toGlColor3({255, 255, 255});
@@ -127,6 +131,7 @@ void StrongholdRoyale::start()
 		TriangleVbo::Unit{{size, size, 0.f}, {1.f, 1.f}, {0.f, 0.f, 1.f}, {textureSize.x, textureSize.y}}});
 	triangle.setPosition({500.f, 0.f, 0.f});
 	triangle.setTexture(textureBox);
+	triangle.setOrigin({size / 2.f, 0.f, 0.f});
 
 	Clock clock;
 	while (!GetWindow().shouldClose())
@@ -138,7 +143,12 @@ void StrongholdRoyale::start()
 		GetWorldVariables()["tick"] = clock.getGap();
 
 		cube.draw(shaderPack, lightning, camera);
+		cube.rotateY(-0.01f);
+		cube.rotateX(-0.01f);
+
 		sun.draw(shaderPack, lightning, camera);
+		sun.rotateY(-0.005f);
+
 		triangle.draw(shaderPack, lightning, camera);
 		triangle.rotateY(-0.005f);
 
