@@ -24,12 +24,13 @@
 
 #include "Camera.h"
 #include "Clock.h"
+#include "Cube.h"
 #include "Image.h"
 #include "Initer.h"
 #include "InputAction.h"
+#include "Lightning.h"
 #include "ShaderPack.h"
 #include "Texture.h"
-#include "Triangle.h"
 #include "UpdateableCollector.h"
 #include "Widget.h"
 #include "WorldVariables.h"
@@ -63,7 +64,7 @@ void StrongholdRoyale::start()
 	widget.move({100.f, 100.f});
 	widget.setOrigin({-50.f, -50.f});
 
-	float cameraSpeed = 100.0f;
+	float cameraSpeed = 5.0f;
 
 	KeyboardInputAction iaCameraRight("Move camera to right", Keyboard::Key::D);
 	iaCameraRight.setIsRepeatable(true);
@@ -101,93 +102,19 @@ void StrongholdRoyale::start()
 			GetWindow().setCursorPosition(GetWindow().getSize().width / 2.0, GetWindow().getSize().height / 2.0);
 		});
 
-	// front side
-	Triangle triangle1(textureBox);
-	triangle1.setVertices({
-		{{0.f, 0.f, 0.f}, {0.f, 0.f}, {0.f, 0.f, 1.f}},
-		{{100.f, 0.f, 0.f}, {1.f, 0.f}, {0.f, 0.f, 1.f}},
-		{{100.f, 100.f, 0.f}, {1.f, 1.f}, {0.f, 0.f, 1.f}},
-	});
-	Triangle triangle2(textureBox);
-	triangle2.setVertices({
-		{{0.f, 0.f, 0.f}, {0.f, 0.f}, {0.f, 0.f, 1.f}},
-		{{100.f, 100.f, 0.f}, {1.f, 1.f}, {0.f, 0.f, 1.f}},
-		{{0.f, 100.f, 0.f}, {0.f, 1.f}, {0.f, 0.f, 1.f}},
-	});
-
-	// back side
-	Triangle triangle3(textureBox);
-	triangle3.setVertices({
-		{{0.f, 0.f, -100.f}, {0.f, 0.f}, {0.f, 0.f, -1.f}},
-		{{100.f, 100.f, -100.f}, {1.f, 1.f}, {0.f, 0.f, -1.f}},
-		{{100.f, 0.f, -100.f}, {1.f, 0.f}, {0.f, 0.f, -1.f}},
-	});
-	Triangle triangle4(textureBox);
-	triangle4.setVertices({
-		{{0.f, 0.f, -100.f}, {0.f, 0.f}, {0.f, 0.f, -1.f}},
-		{{0.f, 100.f, -100.f}, {0.f, 1.f}, {0.f, 0.f, -1.f}},
-		{{100.f, 100.f, -100.f}, {1.f, 1.f}, {0.f, 0.f, -1.f}},
-	});
-
-	// left side
-	Triangle triangle5(textureBox);
-	triangle5.setVertices({
-		{{0.f, 0.f, 0.f}, {1.f, 0.f}, {-1.f, 0.f, 0.f}},
-		{{0.f, 100.f, 0.f}, {1.f, 1.f}, {-1.f, 0.f, 0.f}},
-		{{0.f, 0.f, -100.f}, {0.f, 0.f}, {-1.f, 0.f, 0.f}},
-	});
-	Triangle triangle6(textureBox);
-	triangle6.setVertices({
-		{{0.f, 0.f, -100.f}, {0.f, 0.f}, {-1.f, 0.f, 0.f}},
-		{{0.f, 100.f, 0.f}, {1.f, 1.f}, {-1.f, 0.f, 0.f}},
-		{{0.f, 100.f, -100.f}, {1.f, 0.f}, {-1.f, 0.f, 0.f}},
-	});
-
-	// right side
-	Triangle triangle7(textureBox);
-	triangle7.setVertices({
-		{{100.f, 0.f, 0.f}, {1.f, 0.f}, {1.f, 0.f, 0.f}},
-		{{100.f, 0.f, -100.f}, {0.f, 0.f}, {1.f, 0.f, 0.f}},
-		{{100.f, 100.f, 0.f}, {1.f, 1.f}, {1.f, 0.f, 0.f}},
-	});
-	Triangle triangle8(textureBox);
-	triangle8.setVertices({
-		{{100.f, 0.f, -100.f}, {0.f, 0.f}, {1.f, 0.f, 0.f}},
-		{{100.f, 100.f, -100.f}, {1.f, 0.f}, {1.f, 0.f, 0.f}},
-		{{100.f, 100.f, 0.f}, {1.f, 1.f}, {1.f, 0.f, 0.f}},
-	});
-
-	// top side
-	Triangle triangle9(textureBox);
-	triangle9.setVertices({
-		{{0.f, 100.f, 0.f}, {0.f, 0.f}, {0.f, 1.f, 0.f}},
-		{{100.f, 100.f, -100.f}, {1.f, 1.f}, {0.f, 1.f, 0.f}},
-		{{0.f, 100.f, -100.f}, {0.f, 1.f}, {0.f, 1.f, 0.f}},
-	});
-	Triangle triangle10(textureBox);
-	triangle10.setVertices({
-		{{100.f, 100.f, -100.f}, {1.f, 1.f}, {0.f, 1.f, 0.f}},
-		{{0.f, 100.f, 0.f}, {0.f, 0.f}, {0.f, 1.f, 0.f}},
-		{{100.f, 100.f, 0.f}, {1.f, 0.f}, {0.f, 1.f, 0.f}},
-	});
-
-	// bottom side
-	Triangle triangle11(textureBox);
-	triangle11.setVertices({
-		{{0.f, 0.f, 0.f}, {0.f, 0.f}, {0.f, -1.f, 0.f}},
-		{{0.f, 0.f, -100.f}, {0.f, 1.f}, {0.f, -1.f, 0.f}},
-		{{100.f, 0.f, -100.f}, {1.f, 1.f}, {0.f, -1.f, 0.f}},
-	});
-	Triangle triangle12(textureBox);
-	triangle12.setVertices({
-		{{100.f, 0.f, -100.f}, {1.f, 1.f}, {0.f, -1.f, 0.f}},
-		{{100.f, 0.f, 0.f}, {1.f, 0.f}, {0.f, -1.f, 0.f}},
-		{{0.f, 0.f, 0.f}, {0.f, 0.f}, {0.f, -1.f, 0.f}},
-	});
-
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glEnable(GL_CULL_FACE);
+
+	Lightning lightning;
+	lightning.ambient.lightColor = toGlColor3({255, 255, 255});
+
+	Cube cube;
+	cube.setTexture(textureBox);
+
+	Cube sun;
+	sun.setTexture(textureLoading);
+	sun.setPosition({1000.f, 0, 0});
 
 	Clock clock;
 	while (!GetWindow().shouldClose())
@@ -198,21 +125,11 @@ void StrongholdRoyale::start()
 
 		GetWorldVariables()["tick"] = clock.getGap();
 
+		cube.draw(shaderPack, lightning, camera);
+		sun.draw(shaderPack, lightning, camera);
+
 		widget.draw(shaderPack);
 		widget.rotate(-0.05f);
-
-		triangle1.draw(shaderPack, camera, glm::mat4(1.f));
-		triangle2.draw(shaderPack, camera, glm::mat4(1.f));
-		triangle3.draw(shaderPack, camera, glm::mat4(1.f));
-		triangle4.draw(shaderPack, camera, glm::mat4(1.f));
-		triangle5.draw(shaderPack, camera, glm::mat4(1.f));
-		triangle6.draw(shaderPack, camera, glm::mat4(1.f));
-		triangle7.draw(shaderPack, camera, glm::mat4(1.f));
-		triangle8.draw(shaderPack, camera, glm::mat4(1.f));
-		triangle9.draw(shaderPack, camera, glm::mat4(1.f));
-		triangle10.draw(shaderPack, camera, glm::mat4(1.f));
-		triangle11.draw(shaderPack, camera, glm::mat4(1.f));
-		triangle12.draw(shaderPack, camera, glm::mat4(1.f));
 
 		GetWorld().update();
 		GetWindow().pollEvent();
