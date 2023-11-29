@@ -102,7 +102,7 @@ void StrongholdRoyale::start()
 	iaCameraRotate.onMove.subscribe(
 		[&](glm::ivec2 direction)
 		{
-			camera.rotate(static_cast<glm::vec2>(direction));
+			camera.rotate(static_cast<glm::vec3>(glm::ivec3(direction, 0.f)));
 			GetWindow().setCursorPosition(GetWindow().getSize().width / 2.0, GetWindow().getSize().height / 2.0);
 		});
 
