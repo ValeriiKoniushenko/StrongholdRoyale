@@ -111,10 +111,12 @@ void StrongholdRoyale::start()
 
 	Cube cube;
 	cube.setTexture(textureBox);
+	cube.setOrigin({-50.f, -50.f, -50.f});
 
 	Cube sun;
 	sun.setTexture(textureLoading);
 	sun.setPosition({1000.f, 0, 0});
+	sun.setOrigin({-50.f, -50.f, -50.f});
 
 	Clock clock;
 	while (!GetWindow().shouldClose())
@@ -130,6 +132,8 @@ void StrongholdRoyale::start()
 
 		widget.draw(shaderPack);
 		widget.rotate(-0.05f);
+
+		std::cout << camera.getPosition().x << " " << camera.getPosition().y << " " << camera.getPosition().z << std::endl;
 
 		GetWorld().update();
 		GetWindow().pollEvent();
