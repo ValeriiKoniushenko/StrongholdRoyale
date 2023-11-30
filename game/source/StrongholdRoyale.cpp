@@ -66,6 +66,10 @@ void StrongholdRoyale::start()
 	Image imageSun("assets/textures/sun.jpg", Gl::Texture::Channel::SRGB);
 	textureSun.setImage(imageSun);
 
+	Texture textureFabric(Gl::Texture::Target::Texture2D, true, true);
+	Image imageFabric("assets/textures/Fabric048_4K-JPG_Color.jpg", Gl::Texture::Channel::SRGB);
+	textureFabric.setImage(imageFabric);
+
 	Widget widget(textureLoading);
 	widget.move({100.f, 100.f});
 	widget.setOrigin({-50.f, -50.f});
@@ -112,18 +116,25 @@ void StrongholdRoyale::start()
 	glEnable(GL_BLEND);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_STENCIL_TEST);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
 	Cube cube;
+	cube.setOutlineStatus(true);
 	cube.setTexture(textureBox);
 	cube.setOrigin({50.f, 50.f, -50.f});
 
+	Cube cube2;
+	cube2.setTexture(textureFabric);
+	cube2.setPosition({0.f, 500.f, 0});
+	cube2.setOrigin({50.f, 50.f, -50.f});
+
 	Cube cube1;
+	cube1.setOutlineStatus(true);
 	cube1.setPosition({0.f, 0.f, -1000.f});
 	cube1.setTexture(textureBox);
 	cube1.setOrigin({50.f, 50.f, -50.f});
 
 	Cube sun;
+	sun.setOutlineStatus(true);
 	sun.setTexture(textureSun);
 	sun.setPosition({1000.f, 0, 0});
 	sun.setOrigin({50.f, 50.f, -50.f});
@@ -141,13 +152,14 @@ void StrongholdRoyale::start()
 		GetWorldVariables()["tick"] = clock.getGap();
 
 		cube1.draw(shaderPack, lightning, camera);
-		float scale = sin(::clock() / 300.f) * 3 + 3.2f;
-		cube1.setScale(glm::vec3(scale, scale, scale));
+		cube1.setScale(glm::vec3(sin(::clock() / 300.f) * 3 + 3.2f));
 
 		cube.setScale({1.f, 1.f, 1.f});
 		cube.rotateY(-0.01f);
 		cube.rotateX(-0.01f);
 		cube.draw(shaderPack, lightning, camera);
+
+		cube2.draw(shaderPack, lightning, camera);
 
 		sun.draw(shaderPack, lightning, camera);
 		sun.rotateY(-0.005f);
