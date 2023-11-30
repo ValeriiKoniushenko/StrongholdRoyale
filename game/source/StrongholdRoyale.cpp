@@ -47,10 +47,12 @@ void StrongholdRoyale::start()
 	Camera camera;
 	camera.setSensitive({3.f, 3.f});
 	camera.setFov(80.f);
+	camera.setPosition({1000.f, 1000.f, 1000.f});
 
 	ShaderPack shaderPack;
 	shaderPack.loadShaders("widget", "assets/shaders/widget.vert", "assets/shaders/widget.frag");
 	shaderPack.loadShaders("triangle", "assets/shaders/triangle.vert", "assets/shaders/triangle.frag");
+	shaderPack.loadShaders("outline", "assets/shaders/outline.vert", "assets/shaders/outline.frag");
 
 	Texture textureLoading(Gl::Texture::Target::Texture2D, true, true);
 	Image imageLoading("assets/textures/loading.png", Gl::Texture::Channel::SRGBA);
@@ -109,10 +111,17 @@ void StrongholdRoyale::start()
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glEnable(GL_CULL_FACE);
+	glEnable(GL_STENCIL_TEST);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
 	Cube cube;
 	cube.setTexture(textureBox);
 	cube.setOrigin({50.f, 50.f, -50.f});
+
+	Cube cube1;
+	cube1.setPosition({0.f, 0.f, -1000.f});
+	cube1.setTexture(textureBox);
+	cube1.setOrigin({50.f, 50.f, -50.f});
 
 	Cube sun;
 	sun.setTexture(textureSun);
@@ -120,37 +129,28 @@ void StrongholdRoyale::start()
 	sun.setOrigin({50.f, 50.f, -50.f});
 
 	Lightning lightning;
-	lightning.ambient.lightColor = toGlColor3({255, 255, 255});
 	lightning.specular.position = sun.getPosition();
-
-	glm::vec2 textureSize = textureBox.getImage()->getSize();
-	float size = 50.f;
-	Triangle triangle;
-	triangle.setVertices({TriangleVbo::Unit{{0.f, 0.f, 0.f}, {0.f, 0.f}, {0.f, 0.f, 1.f}, {textureSize.x, textureSize.y}},
-		TriangleVbo::Unit{{size, 0.f, 0.f}, {1.f, 0.f}, {0.f, 0.f, 1.f}, {textureSize.x, textureSize.y}},
-		TriangleVbo::Unit{{size, size, 0.f}, {1.f, 1.f}, {0.f, 0.f, 1.f}, {textureSize.x, textureSize.y}}});
-	triangle.setPosition({500.f, 0.f, 0.f});
-	triangle.setTexture(textureBox);
-	triangle.setOrigin({size / 2.f, 0.f, 0.f});
 
 	Clock clock;
 	while (!GetWindow().shouldClose())
 	{
 		clock.start();
 		GetWindow().clearColor({0.2f, 0.3f, 0.3f});
-		GetWindow().clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		GetWindow().clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 		GetWorldVariables()["tick"] = clock.getGap();
 
-		cube.draw(shaderPack, lightning, camera);
+		cube1.draw(shaderPack, lightning, camera);
+		float scale = sin(::clock() / 300.f) * 3 + 3.2f;
+		cube1.setScale(glm::vec3(scale, scale, scale));
+
+		cube.setScale({1.f, 1.f, 1.f});
 		cube.rotateY(-0.01f);
 		cube.rotateX(-0.01f);
+		cube.draw(shaderPack, lightning, camera);
 
 		sun.draw(shaderPack, lightning, camera);
 		sun.rotateY(-0.005f);
-
-		triangle.draw(shaderPack, lightning, camera);
-		triangle.rotateY(-0.005f);
 
 		widget.draw(shaderPack);
 		widget.rotate(-0.05f);
