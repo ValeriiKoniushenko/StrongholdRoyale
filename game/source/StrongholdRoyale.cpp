@@ -62,6 +62,10 @@ void StrongholdRoyale::start()
 	Image imageBox("assets/textures/box.jpg", Gl::Texture::Channel::SRGB);
 	textureBox.setImage(imageBox);
 
+	Texture textureBoxSpecular(Gl::Texture::Target::Texture2D, true, true);
+	Image imageBoxSpecular("assets/textures/boxSpecular.jpg", Gl::Texture::Channel::SRGB);
+	textureBoxSpecular.setImage(imageBoxSpecular);
+
 	Texture textureSun(Gl::Texture::Target::Texture2D, true, true);
 	Image imageSun("assets/textures/sun.jpg", Gl::Texture::Channel::SRGB);
 	textureSun.setImage(imageSun);
@@ -69,6 +73,10 @@ void StrongholdRoyale::start()
 	Texture textureFabric(Gl::Texture::Target::Texture2D, true, true);
 	Image imageFabric("assets/textures/Fabric048_4K-JPG_Color.jpg", Gl::Texture::Channel::SRGB);
 	textureFabric.setImage(imageFabric);
+
+	Texture textureFabricSpecular(Gl::Texture::Target::Texture2D, true, true);
+	Image imageFabricSpecular("assets/textures/Fabric048_4K-JPG_Specular.jpg", Gl::Texture::Channel::SRGB);
+	textureFabricSpecular.setImage(imageFabricSpecular);
 
 	Widget widget(textureLoading);
 	widget.move({100.f, 100.f});
@@ -118,12 +126,14 @@ void StrongholdRoyale::start()
 	glEnable(GL_STENCIL_TEST);
 
 	Cube cube;
+	cube.setSpecularTexture(textureBoxSpecular);
 	cube.setOutlineStatus(true);
 	cube.setTexture(textureBox);
 	cube.setOrigin({50.f, 50.f, -50.f});
 
 	Cube cube2;
 	cube2.setTexture(textureFabric);
+	cube2.setSpecularTexture(textureFabricSpecular);
 	cube2.setPosition({0.f, 500.f, 0});
 	cube2.setOrigin({50.f, 50.f, -50.f});
 
@@ -155,8 +165,8 @@ void StrongholdRoyale::start()
 		cube1.setScale(glm::vec3(sin(::clock() / 300.f) * 3 + 3.2f));
 
 		cube.setScale({1.f, 1.f, 1.f});
-		cube.rotateY(-0.01f);
-		cube.rotateX(-0.01f);
+		// cube.rotateY(-0.01f);
+		// cube.rotateX(-0.01f);
 		cube.draw(shaderPack, lightning, camera);
 
 		cube2.draw(shaderPack, lightning, camera);
