@@ -25,11 +25,11 @@
 #include "Camera.h"
 #include "Clock.h"
 #include "Cube.h"
+#include "Grid.h"
 #include "Image.h"
 #include "Initer.h"
 #include "InputAction.h"
 #include "Lightning.h"
-#include "Line.h"
 #include "ModelPack.h"
 #include "ShaderPack.h"
 #include "Texture.h"
@@ -48,7 +48,7 @@ void StrongholdRoyale::start()
 
 	Camera camera;
 	camera.setSensitive({3.f, 3.f});
-	camera.setFov(80.f);
+	camera.setFov(120.f);
 	camera.setPosition({1000.f, 0.f, 1000.f});
 
 	ShaderPack shaderPack;
@@ -146,7 +146,7 @@ void StrongholdRoyale::start()
 	for (auto& model : modelPack)
 	{
 		model.second.setScale({100.f, 100.f, 100.f});
-		model.second.setPosition({1000.f, 1000.f, 1000.f});
+		model.second.setPosition({1000.f, 0.f, 1000.f});
 		model.second.setTexture(textureRock);
 		model.second.setTextureRect({2048.f, 2048.f});
 		model.second.setOutlineStatus(true);
@@ -177,13 +177,14 @@ void StrongholdRoyale::start()
 	sun.setPosition({1000.f, 0, 0});
 	sun.setOrigin({50.f, 50.f, -50.f});
 
+	Grid grid;
+	grid.setColor({44, 44, 44, 97});
+	grid.setWidth(2.f);
+	grid.setSize(10'000);
+	grid.generate();
+
 	Lightning lightning;
 	lightning.specular.position = sun.getPosition();
-
-	Line Line;
-	Line.setStartAndEndPoint({200.f, 0.f, 0.f}, {500.f, 500.f, 500.f});
-	Line.setWidth(5.f);
-	Line.setColor({2, 100, 237});
 
 	Clock clock;
 	while (!GetWindow().shouldClose())
@@ -192,9 +193,7 @@ void StrongholdRoyale::start()
 		GetWindow().clearColor({0.2f, 0.3f, 0.3f});
 		GetWindow().clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-		GetWorldVariables()["tick"] = clock.getGap();
-
-		Line.draw(shaderPack, camera);
+		grid.draw(shaderPack, camera);
 
 		cube1.draw(shaderPack, lightning, camera);
 		cube1.setScale(glm::vec3(sin(::clock() / 300.f) * 3 + 3.2f));
@@ -221,6 +220,6 @@ void StrongholdRoyale::start()
 		GetWindow().pollEvent();
 		GetWindow().swapBuffers();
 		GetUpdateableCollector().updateAll();
-		clock.stop();
+		GetWorldVariables()["tick"] = clock.stop();
 	}
 }
