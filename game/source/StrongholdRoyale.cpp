@@ -193,7 +193,7 @@ void StrongholdRoyale::start()
 		GetWindow().clearColor({0.2f, 0.3f, 0.3f});
 		GetWindow().clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-		grid.draw(shaderPack, camera);
+		grid.draw(shaderPack, lightning, camera);
 
 		cube1.draw(shaderPack, lightning, camera);
 		cube1.setScale(glm::vec3(sin(::clock() / 300.f) * 3 + 3.2f));
