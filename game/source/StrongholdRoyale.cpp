@@ -24,6 +24,7 @@
 
 #include "Camera.h"
 #include "Clock.h"
+#include "CoordinateSystemVisualizer.h"
 #include "Cube.h"
 #include "Grid.h"
 #include "Image.h"
@@ -158,6 +159,7 @@ void StrongholdRoyale::start()
 	cube.setOutlineStatus(true);
 	cube.setTexture(textureBox);
 	cube.setOrigin({50.f, 50.f, -50.f});
+	cube.setPosition({350.f, 50.f, 350.f});
 
 	Cube cube2;
 	cube2.setTexture(textureFabric);
@@ -186,6 +188,8 @@ void StrongholdRoyale::start()
 	Lightning lightning;
 	lightning.specular.position = sun.getPosition();
 
+	CoordinateSystemVisualizer csv;
+
 	Clock clock;
 	while (!GetWindow().shouldClose())
 	{
@@ -199,8 +203,6 @@ void StrongholdRoyale::start()
 		cube1.setScale(glm::vec3(sin(::clock() / 300.f) * 3 + 3.2f));
 
 		cube.setScale({1.f, 1.f, 1.f});
-		cube.rotateY(-0.01f);
-		cube.rotateX(-0.01f);
 		cube.draw(shaderPack, lightning, camera);
 
 		for (auto& model : modelPack)
@@ -209,6 +211,8 @@ void StrongholdRoyale::start()
 		}
 
 		cube2.draw(shaderPack, lightning, camera);
+
+		csv.draw(shaderPack, lightning, camera);
 
 		sun.draw(shaderPack, lightning, camera);
 		sun.rotateY(-0.005f);
