@@ -29,6 +29,7 @@
 #include "Initer.h"
 #include "InputAction.h"
 #include "Lightning.h"
+#include "ModelPack.h"
 #include "ShaderPack.h"
 #include "Texture.h"
 #include "UpdateableCollector.h"
@@ -47,7 +48,7 @@ void StrongholdRoyale::start()
 	Camera camera;
 	camera.setSensitive({3.f, 3.f});
 	camera.setFov(80.f);
-	camera.setPosition({1000.f, 1000.f, 1000.f});
+	camera.setPosition({1000.f, 0.f, 1000.f});
 
 	ShaderPack shaderPack;
 	shaderPack.loadShaders("widget", "assets/shaders/widget.vert", "assets/shaders/widget.frag");
@@ -58,8 +59,13 @@ void StrongholdRoyale::start()
 	Image imageLoading("assets/textures/loading.png", Gl::Texture::Channel::SRGBA);
 	textureLoading.setImage(imageLoading);
 
+	Texture textureRock(Gl::Texture::Target::Texture2D, true, true);
+	Image imageRock("assets/textures/rock.png", Gl::Texture::Channel::SRGBA);
+	textureRock.setImage(imageRock);
+
 	Texture textureBox(Gl::Texture::Target::Texture2D, true, true);
 	Image imageBox("assets/textures/box.jpg", Gl::Texture::Channel::SRGB);
+	textureBox.setMagAndMinFilter(Gl::Texture::MagFilter::Nearest, Gl::Texture::MinFilter::Nearest);
 	textureBox.setImage(imageBox);
 
 	Texture textureBoxSpecular(Gl::Texture::Target::Texture2D, true, true);
@@ -125,6 +131,18 @@ void StrongholdRoyale::start()
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_STENCIL_TEST);
 
+	ModelPack modelPack;
+	modelPack.loadFromFile("assets/models/rock.obj");
+	for (auto& model : modelPack)
+	{
+		model.second.setScale({100.f, 100.f, 100.f});
+		model.second.setPosition({1000.f, 1000.f, 1000.f});
+		model.second.setTexture(textureRock);
+		model.second.setTextureRect({2048.f, 2048.f});
+		model.second.setOutlineStatus(true);
+		model.second.setOutlineSize({0.8f, 0.8f, 0.8f});
+	}
+
 	Cube cube;
 	cube.setSpecularTexture(textureBoxSpecular);
 	cube.setOutlineStatus(true);
@@ -165,9 +183,14 @@ void StrongholdRoyale::start()
 		cube1.setScale(glm::vec3(sin(::clock() / 300.f) * 3 + 3.2f));
 
 		cube.setScale({1.f, 1.f, 1.f});
-		// cube.rotateY(-0.01f);
-		// cube.rotateX(-0.01f);
+		cube.rotateY(-0.01f);
+		cube.rotateX(-0.01f);
 		cube.draw(shaderPack, lightning, camera);
+
+		for (auto& model : modelPack)
+		{
+			model.second.draw(shaderPack, lightning, camera);
+		}
 
 		cube2.draw(shaderPack, lightning, camera);
 

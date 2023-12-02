@@ -39,7 +39,7 @@ int main()
 	}
 	catch (const std::exception& error)
 	{
-		MessageBoxA(nullptr, "Unknown std error.", "Stronghold Royale: std::FATAL", MB_OK);
+		MessageBoxA(nullptr, error.what(), "Stronghold Royale: std::FATAL", MB_OK);
 	}
 	catch (...)
 	{
