@@ -29,6 +29,7 @@
 #include "Initer.h"
 #include "InputAction.h"
 #include "Lightning.h"
+#include "Line.h"
 #include "ModelPack.h"
 #include "ShaderPack.h"
 #include "Texture.h"
@@ -54,6 +55,7 @@ void StrongholdRoyale::start()
 	shaderPack.loadShaders("widget", "assets/shaders/widget.vert", "assets/shaders/widget.frag");
 	shaderPack.loadShaders("triangle", "assets/shaders/triangle.vert", "assets/shaders/triangle.frag");
 	shaderPack.loadShaders("outline", "assets/shaders/outline.vert", "assets/shaders/outline.frag");
+	shaderPack.loadShaders("line", "assets/shaders/line.vert", "assets/shaders/line.frag");
 
 	Texture textureLoading(Gl::Texture::Target::Texture2D, true, true);
 	Image imageLoading("assets/textures/loading.png", Gl::Texture::Channel::SRGBA);
@@ -126,6 +128,14 @@ void StrongholdRoyale::start()
 			GetWindow().setCursorPosition(GetWindow().getSize().width / 2.0, GetWindow().getSize().height / 2.0);
 		});
 
+	MouseInputAction iaCameraRay("Camera ray", Mouse::Key::Left);
+	iaCameraRay.onMouseClick.subscribe(
+		[&camera](glm::ivec2 mousePosition)
+		{
+			auto ray = camera.getMatrix() * glm::vec4(0.f, 0.f, 0.f, 1.f);
+			std::cout << "Mouse clicked at: " << ray.x << " " << ray.y << " " << ray.z << std::endl;
+		});
+
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glEnable(GL_CULL_FACE);
@@ -170,6 +180,11 @@ void StrongholdRoyale::start()
 	Lightning lightning;
 	lightning.specular.position = sun.getPosition();
 
+	Line Line;
+	Line.setStartAndEndPoint({200.f, 0.f, 0.f}, {500.f, 500.f, 500.f});
+	Line.setWidth(5.f);
+	Line.setColor({2, 100, 237});
+
 	Clock clock;
 	while (!GetWindow().shouldClose())
 	{
@@ -178,6 +193,8 @@ void StrongholdRoyale::start()
 		GetWindow().clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 		GetWorldVariables()["tick"] = clock.getGap();
+
+		Line.draw(shaderPack, camera);
 
 		cube1.draw(shaderPack, lightning, camera);
 		cube1.setScale(glm::vec3(sin(::clock() / 300.f) * 3 + 3.2f));
