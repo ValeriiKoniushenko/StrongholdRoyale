@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include "ClientSocket.h"
 #include "NotCopyableAndNotMovable.h"
 
 class StrongholdRoyale : Utils::NotCopyableAndNotMovable
@@ -30,4 +31,5 @@ public:
 	void start();
 
 private:
+	TCPClientSocket client;
 };

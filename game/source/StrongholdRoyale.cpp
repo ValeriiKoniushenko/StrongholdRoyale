@@ -126,6 +126,15 @@ void StrongholdRoyale::start()
 	iaExit.setIsRepeatable(false);
 	iaExit.onAction.subscribe([&]() { std::exit(0); });
 
+	KeyboardInputAction iaConnectToEditor("Exit", Keyboard::Key::F4);
+	iaConnectToEditor.setIsRepeatable(false);
+	iaConnectToEditor.onAction.subscribe(
+		[&]()
+		{
+			client.open(AddressFamily::Inet);
+			client.connectTo(SocketAddress("127.0.0.1", 48989));
+		});
+
 	MouseInputAction iaCameraRotate("Camera rotate");
 	iaCameraRotate.onMove.subscribe(
 		[&](glm::ivec2 direction)
