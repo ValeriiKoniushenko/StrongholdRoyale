@@ -32,6 +32,7 @@
 #include "InputAction.h"
 #include "Lightning.h"
 #include "ModelPack.h"
+#include "RayCast.h"
 #include "ShaderPack.h"
 #include "Texture.h"
 #include "UpdateableCollector.h"
@@ -65,6 +66,10 @@ void StrongholdRoyale::start()
 	Texture textureRock(Gl::Texture::Target::Texture2D, true, true);
 	Image imageRock("assets/textures/rock.png", Gl::Texture::Channel::SRGBA);
 	textureRock.setImage(imageRock);
+
+	Texture textureRockSpecular(Gl::Texture::Target::Texture2D, true, true);
+	Image imageRockSpecular("assets/textures/rockSpecular.png", Gl::Texture::Channel::SRGBA);
+	textureRockSpecular.setImage(imageRockSpecular);
 
 	Texture textureBox(Gl::Texture::Target::Texture2D, true, true);
 	Image imageBox("assets/textures/box.jpg", Gl::Texture::Channel::SRGB);
@@ -129,12 +134,22 @@ void StrongholdRoyale::start()
 			GetWindow().setCursorPosition(GetWindow().getSize().width / 2.0, GetWindow().getSize().height / 2.0);
 		});
 
+	RayCast rayCast;
+	rayCast.setWidth(10.f);
+	rayCast.setColor({255, 0, 0, 255});
+
 	MouseInputAction iaCameraRay("Camera ray", Mouse::Key::Left);
+	iaCameraRay.setIsRepeatable(false);
 	iaCameraRay.onMouseClick.subscribe(
-		[&camera](glm::ivec2 mousePosition)
+		[&](glm::ivec2 mousePosition)
 		{
-			auto ray = camera.getMatrix() * glm::vec4(0.f, 0.f, 0.f, 1.f);
-			std::cout << "Mouse clicked at: " << ray.x << " " << ray.y << " " << ray.z << std::endl;
+			auto ray = camera.getPosition() - camera.getForwardVector() * 10000.f;
+			rayCast.setStartAndEndPoint(camera.getPosition(), ray);
+			if (auto* obj = rayCast.findIntersects(); obj)
+			{
+				obj->toggleOutline();
+				obj->toggleDrawCoordinateSystem();
+			}
 		});
 
 	glEnable(GL_DEPTH_TEST);
@@ -149,17 +164,22 @@ void StrongholdRoyale::start()
 		model.second.setScale({100.f, 100.f, 100.f});
 		model.second.setPosition({1000.f, 0.f, 1000.f});
 		model.second.setTexture(textureRock);
+		model.second.setSpecularTexture(textureRockSpecular);
 		model.second.setTextureRect({2048.f, 2048.f});
-		model.second.setOutlineStatus(true);
 		model.second.setOutlineSize({0.8f, 0.8f, 0.8f});
 	}
 
 	Cube cube;
 	cube.setSpecularTexture(textureBoxSpecular);
-	cube.setOutlineStatus(true);
 	cube.setTexture(textureBox);
 	cube.setOrigin({50.f, 50.f, -50.f});
 	cube.setPosition({350.f, 50.f, 350.f});
+
+	Cube cube3;
+	cube3.setSpecularTexture(textureBoxSpecular);
+	cube3.setTexture(textureBox);
+	cube3.setOrigin({50.f, 50.f, -50.f});
+	cube3.setPosition({-350.f, 50.f, 350.f});
 
 	Cube cube2;
 	cube2.setTexture(textureFabric);
@@ -168,13 +188,11 @@ void StrongholdRoyale::start()
 	cube2.setOrigin({50.f, 50.f, -50.f});
 
 	Cube cube1;
-	cube1.setOutlineStatus(true);
 	cube1.setPosition({0.f, 0.f, -1000.f});
 	cube1.setTexture(textureBox);
 	cube1.setOrigin({50.f, 50.f, -50.f});
 
 	Cube sun;
-	sun.setOutlineStatus(true);
 	sun.setTexture(textureSun);
 	sun.setPosition({1000.f, 0, 0});
 	sun.setOrigin({50.f, 50.f, -50.f});
@@ -183,7 +201,6 @@ void StrongholdRoyale::start()
 	grid.setColor({44, 44, 44, 97});
 	grid.setWidth(2.f);
 	grid.setSize(10'000);
-	grid.generate();
 
 	Lightning lightning;
 	lightning.specular.position = sun.getPosition();
@@ -211,6 +228,11 @@ void StrongholdRoyale::start()
 		}
 
 		cube2.draw(shaderPack, lightning, camera);
+
+		cube3.rotateX(0.05);
+		cube3.rotateY(0.05);
+		cube3.rotateZ(0.05);
+		cube3.draw(shaderPack, lightning, camera);
 
 		csv.draw(shaderPack, lightning, camera);
 
