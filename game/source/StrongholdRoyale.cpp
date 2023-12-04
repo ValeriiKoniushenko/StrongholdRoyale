@@ -44,9 +44,7 @@
 
 void StrongholdRoyale::start()
 {
-	Initer::init({.glfwVersion = glm::ivec2(3, 3), .windowSize = {2000, 1000}, .title = "Stronghold Royale"});
-
-	GetWindow().viewport(0, 0, GetWindow().getSize().width, GetWindow().getSize().height);
+	BaseApp::start();
 
 	Camera camera;
 	camera.setSensitive({3.f, 3.f});
@@ -125,15 +123,6 @@ void StrongholdRoyale::start()
 	KeyboardInputAction iaExit("Exit", Keyboard::Key::Esc);
 	iaExit.setIsRepeatable(false);
 	iaExit.onAction.subscribe([&]() { std::exit(0); });
-
-	KeyboardInputAction iaConnectToEditor("Exit", Keyboard::Key::F4);
-	iaConnectToEditor.setIsRepeatable(false);
-	iaConnectToEditor.onAction.subscribe(
-		[&]()
-		{
-			client.open(AddressFamily::Inet);
-			client.connectTo(SocketAddress("127.0.0.1", 48989));
-		});
 
 	MouseInputAction iaCameraRotate("Camera rotate");
 	iaCameraRotate.onMove.subscribe(

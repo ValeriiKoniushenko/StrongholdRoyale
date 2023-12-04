@@ -22,14 +22,10 @@
 
 #pragma once
 
-#include "ClientSocket.h"
-#include "NotCopyableAndNotMovable.h"
+#include "BaseApp.h"
 
-class StrongholdRoyale : Utils::NotCopyableAndNotMovable
+class StrongholdRoyale : public BaseApp
 {
 public:
-	void start();
-
-private:
-	TCPClientSocket client;
+	void start() override;
 };

@@ -11,6 +11,7 @@ target_link_libraries(StrongholdRoyale PUBLIC
 	Input-Devices
 	Camera
 	Socket
+	App
 )
 
 add_custom_command(TARGET StrongholdRoyale PRE_BUILD
