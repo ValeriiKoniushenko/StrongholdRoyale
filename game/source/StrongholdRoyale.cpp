@@ -46,6 +46,8 @@ void StrongholdRoyale::start()
 {
 	BaseApp::start();
 
+	GetWindow().setIcon("assets/icon/AppIcon.png");
+
 	Camera camera;
 	camera.setSensitive({3.f, 3.f});
 	camera.setFov(120.f);
