@@ -23,9 +23,14 @@
 #pragma once
 
 #include "BaseApp.h"
+#include "SRGameState.h"
+
+#include <memory>
 
 class StrongholdRoyale : public BaseApp
 {
 public:
 	void start() override;
+
+	std::unique_ptr<SRGameState> mainGameState;
 };

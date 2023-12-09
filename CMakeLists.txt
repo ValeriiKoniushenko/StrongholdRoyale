@@ -17,4 +17,7 @@ if (DEFINED CMAKE_BUILD_TYPE)
 endif ()
 
 add_subdirectory(VaKon3D)
+
 add_subdirectory(game)
+
+add_subdirectory(lib/sr-world)

@@ -20,40 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "StrongholdRoyale.h"
+#include "SRWorld.h"
 
-#include "Clock.h"
-#include "Initer.h"
-#include "UpdateableCollector.h"
-#include "WorldVariables.h"
+#include "SRGameMode.h"
+#include "SRGameState.h"
+#include "SRPlayerState.h"
 
-void StrongholdRoyale::start()
+SRWorld::SRWorld()
 {
-	BaseApp::start();
+	this->gameMode = std::make_unique<SRGameMode>();
+	this->gameState = std::make_unique<SRGameState>();
+	this->playerState = std::make_unique<SRPlayerState>();
+}
 
-	GetWindow().setIcon("assets/icon/AppIcon.png");
-
-	mainGameState = std::make_unique<SRGameState>();
-	mainGameState->onCreate();
-
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_STENCIL_TEST);
-
-	Clock clock;
-	while (!GetWindow().shouldClose())
-	{
-		clock.start();
-		GetWindow().clearColor({0.2f, 0.3f, 0.3f});
-		GetWindow().clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-		mainGameState->onTick();
-
-		GetWorld().update();
-		GetWindow().pollEvent();
-		GetWindow().swapBuffers();
-		GetUpdateableCollector().updateAll();
-		GetWorldVariables()["tick"] = clock.stop();
-	}
+SRWorld& GetSRWorld()
+{
+	return SRWorld::instance();
 }

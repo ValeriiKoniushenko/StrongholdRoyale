@@ -12,6 +12,8 @@ target_link_libraries(StrongholdRoyale PUBLIC
 	Camera
 	Socket
 	App
+	Base-Game
+	SR-World
 )
 
 add_custom_command(TARGET StrongholdRoyale PRE_BUILD

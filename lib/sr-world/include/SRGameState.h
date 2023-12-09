@@ -20,40 +20,50 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "StrongholdRoyale.h"
+#pragma once
 
-#include "Clock.h"
-#include "Initer.h"
-#include "UpdateableCollector.h"
-#include "WorldVariables.h"
+#include "BaseGameState.h"
+#include "Camera.h"
+#include "CoordinateSystemVisualizer.h"
+#include "Grid.h"
+#include "Image.h"
+#include "InputAction.h"
+#include "ModelPack.h"
+#include "ShaderPack.h"
+#include "Texture.h"
+#include "Widget.h"
 
-void StrongholdRoyale::start()
+class SRGameState : public BaseGameState
 {
-	BaseApp::start();
-
-	GetWindow().setIcon("assets/icon/AppIcon.png");
-
-	mainGameState = std::make_unique<SRGameState>();
-	mainGameState->onCreate();
-
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_STENCIL_TEST);
-
-	Clock clock;
-	while (!GetWindow().shouldClose())
+public:
+	SRGameState() : BaseGameState(1)
 	{
-		clock.start();
-		GetWindow().clearColor({0.2f, 0.3f, 0.3f});
-		GetWindow().clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-		mainGameState->onTick();
-
-		GetWorld().update();
-		GetWindow().pollEvent();
-		GetWindow().swapBuffers();
-		GetUpdateableCollector().updateAll();
-		GetWorldVariables()["tick"] = clock.stop();
 	}
-}
+
+	void onCreate() override;
+	void onTick() override;
+
+	Camera camera;
+	ShaderPack shaderPack;
+	Texture textureRock;
+	Image imageRock;
+	Texture textureRockSpecular;
+	Image imageRockSpecular;
+	ModelPack modelPack;
+	float cameraImpulse = 5.0f;
+
+	Lightning lightning;
+
+	Grid grid;
+	CoordinateSystemVisualizer csv;
+
+	KeyboardInputAction iaCameraRight;
+	KeyboardInputAction iaCameraLeft;
+	KeyboardInputAction iaCameraForward;
+	KeyboardInputAction iaCameraBackward;
+	KeyboardInputAction iaCameraUp;
+	KeyboardInputAction iaCameraDown;
+	KeyboardInputAction iaExit;
+	MouseInputAction iaCameraRotate;
+	MouseInputAction iaCameraRay;
+};
