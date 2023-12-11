@@ -41,6 +41,13 @@ void StrongholdRoyale::start()
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_STENCIL_TEST);
 
+	Timer timer;
+	timer.setFrequency(Timer::Unit(7));
+	timer.setMode(Timer::Mode::Infinity);
+	timer.setCallback([]() { GetUpdateableCollector().updateAll(); });
+	timer.start();
+	GetWorld().addTimer(std::move(timer));
+
 	Clock clock;
 	while (!GetWindow().shouldClose())
 	{
@@ -53,7 +60,6 @@ void StrongholdRoyale::start()
 		GetWorld().update();
 		GetWindow().pollEvent();
 		GetWindow().swapBuffers();
-		GetUpdateableCollector().updateAll();
 		GetWorldVariables()["tick"] = clock.stop();
 	}
 }

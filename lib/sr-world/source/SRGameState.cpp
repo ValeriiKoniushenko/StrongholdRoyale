@@ -29,13 +29,14 @@ void SRGameState::onCreate()
 	// ========= CAMERA ===========
 	camera.setSensitive({3.f, 3.f});
 	camera.setFov(120.f);
-	camera.setPosition({1000.f, 0.f, 1000.f});
+	camera.setPosition({100.f, 100.f, 100.f});
 
 	// ========= SHADERS ===========
 	shaderPack.loadShaders("widget", "assets/shaders/widget.vert", "assets/shaders/widget.frag");
 	shaderPack.loadShaders("triangle", "assets/shaders/triangle.vert", "assets/shaders/triangle.frag");
 	shaderPack.loadShaders("outline", "assets/shaders/outline.vert", "assets/shaders/outline.frag");
 	shaderPack.loadShaders("line", "assets/shaders/line.vert", "assets/shaders/line.frag");
+	shaderPack.loadShaders("skybox", "assets/shaders/skybox.vert", "assets/shaders/skybox.frag");
 
 	// ========== INPUT ACTIONS ============
 	iaCameraRight.setName("Move camera to right");
@@ -93,35 +94,32 @@ void SRGameState::onCreate()
 		});
 
 	// ========= TEXTURES & IMAGES ===========
-	imageRock.loadImage("assets/textures/rock.png");
-	imageRock.setInternalChannel(Gl::Texture::Channel::SRGBA);
+	textureRock.loadImage("assets/textures/overlay.png");
+	textureRock.setInternalChannel(Gl::Texture::Channel::SRGBA);
 
-	textureRock.generate();
-	textureRock.bind();
-	textureRock.setImage(imageRock);
-
-	imageRockSpecular.loadImage("assets/textures/rockSpecular.png");
-	imageRockSpecular.setInternalChannel(Gl::Texture::Channel::SRGBA);
-
-	textureRockSpecular.generate();
-	textureRockSpecular.bind();
-	textureRockSpecular.setImage(imageRockSpecular);
+	textureRockSpecular.loadImage("assets/textures/overlaySpecular.png");
+	textureRockSpecular.setInternalChannel(Gl::Texture::Channel::SRGBA);
 
 	// ========= MODELS ===========
-	modelPack.loadFromFile("assets/models/rock.obj");
+	// modelPack.loadFromFile("assets/models/stone_small/stone_small_a.obj");
+	modelPack.loadFromFile("assets/models/landscape2.obj");
 	for (auto& model : modelPack)
 	{
 		model.second.setScale({100.f, 100.f, 100.f});
-		model.second.setPosition({1000.f, 0.f, 1000.f});
+		model.second.setPosition({0.f, 0.f, 0.f});
 		model.second.setTexture(textureRock);
 		model.second.setSpecularTexture(textureRockSpecular);
-		model.second.setTextureRect({2048.f, 2048.f});
-		model.second.setOutlineSize({0.8f, 0.8f, 0.8f});
+		model.second.setTextureRect({3072.f, 2560.f});
 	}
+
+	skybox.loadFromFiles({"assets/textures/cubemap/px.png", "assets/textures/cubemap/nx.png", "assets/textures/cubemap/py.png",
+		"assets/textures/cubemap/ny.png", "assets/textures/cubemap/pz.png", "assets/textures/cubemap/nz.png"});
 }
 
 void SRGameState::onTick()
 {
+	skybox.draw(shaderPack, camera);
+
 	grid.draw(shaderPack, lightning, camera);
 
 	csv.draw(shaderPack, lightning, camera);

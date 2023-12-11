@@ -30,7 +30,8 @@
 #include "InputAction.h"
 #include "ModelPack.h"
 #include "ShaderPack.h"
-#include "Texture.h"
+#include "Skybox.h"
+#include "Texture2D.h"
 #include "Widget.h"
 
 class SRGameState : public BaseGameState
@@ -45,12 +46,12 @@ public:
 
 	Camera camera;
 	ShaderPack shaderPack;
-	Texture textureRock;
-	Image imageRock;
-	Texture textureRockSpecular;
-	Image imageRockSpecular;
+	Texture2D textureRock;
+	Texture2D textureRockSpecular;
 	ModelPack modelPack;
-	float cameraImpulse = 5.0f;
+	float cameraImpulse = 1000.0f;
+
+	Skybox skybox;
 
 	Lightning lightning;
 
