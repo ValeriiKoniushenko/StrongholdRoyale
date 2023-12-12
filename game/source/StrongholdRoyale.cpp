@@ -40,6 +40,7 @@ void StrongholdRoyale::start()
 	glEnable(GL_BLEND);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_STENCIL_TEST);
+	glEnable(GL_FRAMEBUFFER_SRGB);
 
 	Timer timer;
 	timer.setFrequency(Timer::Unit(7));

@@ -54,6 +54,7 @@ public:
 	Skybox skybox;
 
 	Lightning lightning;
+	Lightning lightningForGrid;
 
 	Grid grid;
 	CoordinateSystemVisualizer csv;

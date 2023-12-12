@@ -114,13 +114,15 @@ void SRGameState::onCreate()
 
 	skybox.loadFromFiles({"assets/textures/cubemap/px.png", "assets/textures/cubemap/nx.png", "assets/textures/cubemap/py.png",
 		"assets/textures/cubemap/ny.png", "assets/textures/cubemap/pz.png", "assets/textures/cubemap/nz.png"});
+
+	lightningForGrid.fog.color.a = 0;
 }
 
 void SRGameState::onTick()
 {
 	skybox.draw(shaderPack, camera);
 
-	grid.draw(shaderPack, lightning, camera);
+	grid.draw(shaderPack, lightningForGrid, camera);
 
 	csv.draw(shaderPack, lightning, camera);
 
